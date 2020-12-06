@@ -1,0 +1,140 @@
+#include<iostream>
+using namespace std;
+
+class Matrix{
+	public:
+		Matrix(int rows, int columns); //构造函数  
+		~Matrix();  //析构函数  
+		void Assignment();
+		Matrix operator*(Matrix mat);    //重载*  
+		Matrix operator*(int x);
+		friend ostream& operator<<(ostream& out, Matrix mat);  //重载<<  
+		
+	private:
+		int rows;
+		int columns;
+		float** data;
+};
+
+Matrix::Matrix(int rows, int columns) {
+	this->rows = rows;
+	this->columns = columns;
+	this->data = new float* [rows];
+	for (int i = 0; i < rows; i++)
+	{
+		this->data[i] = new float[columns];
+	}
+}
+
+Matrix::~Matrix() {
+}
+
+void Matrix::Assignment() {
+	for (int i = 0; i < this->rows; i++)
+	{
+		cout << "\n输入矩阵的第" << i + 1 << "行数据(该行共有" << this->columns << "个数据) : \n";
+		for (int j = 0; j < this->columns; j++)
+		{
+			cin >> this->data[i][j];
+		}
+	}
+}
+
+Matrix Matrix::operator* (Matrix mat) {
+	Matrix matProduct(rows, mat.columns);
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < mat.columns; j++) {
+			matProduct.data[i][j] = 0;
+			for (int k = 0; k < columns; k++) {
+				matProduct.data[i][j] += data[i][k] * mat.data[k][j];
+			}
+		}
+	}
+	return matProduct;
+}
+
+Matrix Matrix::operator* (int x) {
+	Matrix matProduct(rows, columns);
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < columns; j++) {
+			matProduct.data[i][j] = 0;
+			matProduct.data[i][j] = matProduct.data[i][j] + data[i][j] * x;
+		}
+	}
+	return matProduct;
+}
+
+ostream& operator<<(ostream& out, Matrix mat) {
+	for (int i = 0; i < mat.rows; i++) {
+		for (int j = 0; j < mat.columns; j++) {
+			out << mat.data[i][j];
+			if (j == mat.columns - 1)
+				out << endl;
+			else out << " ";
+		}
+	}
+	return out;
+}
+
+
+int main() {
+	int rowsA;
+	int columnsA;
+	int rowsB;
+	int columnsB;
+	int mulcount;
+	cout << "输入矩阵A的行数：";
+	cin >> rowsA;
+	cout << "输入矩阵A的列数：";
+	cin >> columnsA;
+	cout << "输入矩阵B的行数：";
+	cin >> rowsB;
+	cout << "输入矩阵B的列数：";
+	cin >> columnsB;
+	if (rowsA == 1 && columnsA == 1 && rowsB !=1) {
+		cout << "\n输入数乘值：" ;
+		cin >> mulcount;
+		Matrix MB(rowsB, columnsB);
+		Matrix MAB(rowsB, columnsB);
+		cout << "\n【矩阵B赋值】";
+		MB.Assignment();
+		MAB = MB * mulcount;
+		cout << "\n【数乘a】\n";
+		cout << mulcount;
+		cout << "\n【矩阵B】\n";
+		cout << MB;
+		cout << "\n【a × B】\n";
+		cout << MAB;
+	}
+	else if (rowsB == 1 && columnsB == 1 && columnsA != 1) {
+		cout << "\n输入数乘值：";
+		cin >> mulcount;
+		Matrix MA(rowsA, columnsA);
+		Matrix MAB(rowsA, columnsA);
+		cout << "\n【矩阵A赋值】";
+		MA.Assignment();
+		MAB = MA * mulcount;
+		cout << "\n【矩阵A】\n";
+		cout << MA;
+		cout << "\n【数乘b】\n";
+		cout << mulcount;
+		cout << "\n【A × b】\n";
+		cout << MAB;
+	}
+	else {
+		Matrix MA(rowsA, columnsA);
+		Matrix MB(rowsB, columnsB);
+		Matrix MAB(rowsA, columnsB);
+		cout << "\n【矩阵A赋值】";
+		MA.Assignment();
+		cout << "\n【矩阵B赋值】";
+		MB.Assignment();
+		MAB = MA * MB;
+		cout << "\n【矩阵A】\n";
+		cout << MA;
+		cout << "\n【矩阵B】\n";
+		cout << MB;
+		cout << "\n【A × B】\n";
+		cout << MAB;
+	}
+}
